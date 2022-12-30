@@ -10,20 +10,19 @@ public class Config {
     private static final Properties defaultValues = new Properties();
     private static final Logger Logger = LogUtils.getLogger();
     private String fileName;
+    private String lootKey;
 
-    public boolean rmbTweak = true;
-    public boolean lmbTweakWithItem = true;
-    public boolean lmbTweakWithoutItem = true;
-    public boolean wheelTweak = true;
-    public static boolean debug = false;
+
 
     Config(String fileName) {
         this.fileName = fileName;
     }
 
     public void read() {
+        // Create a new properties object, with the default values from bottom of this file
         Properties properties = new Properties(defaultValues);
 
+        // Try to load the config file
         try {
             FileReader configReader = new FileReader(fileName);
             properties.load(configReader);
@@ -32,31 +31,20 @@ public class Config {
             // If the config does not exist, generate the default one.
             Logger.info("Generating the config file at: " + fileName);
             save();
-            return;
+            return; // Return here, so we don't try to read the config file
         } catch (IOException e) {
+            // If we fail to read the config file, log the error and return
             Logger.info("Failed to read the config file: " + fileName);
             e.printStackTrace();
         }
 
         // Read the config values from the file:
-//            rmbTweak = parseIntOrDefault(properties.getProperty(Constants.CONFIG_RMB_TWEAK), 1) != 0;
-//            lmbTweakWithItem = parseIntOrDefault(properties.getProperty(Constants.CONFIG_LMB_TWEAK_WITH_ITEM), 1) != 0;
-//            lmbTweakWithoutItem = parseIntOrDefault(properties.getProperty(Constants.CONFIG_LMB_TWEAK_WITHOUT_ITEM), 1)
-//                    != 0;
-//            wheelTweak = parseIntOrDefault(properties.getProperty(Constants.CONFIG_WHEEL_TWEAK), 1) != 0;
-//            wheelSearchOrder
-//                    = WheelSearchOrder.fromId(parseIntOrDefault(properties.getProperty(Constants.CONFIG_WHEEL_SEARCH_ORDER),
-//                    1));
-//            wheelScrollDirection
-//                    =
-//                    WheelScrollDirection.fromId(parseIntOrDefault(properties.getProperty(Constants.CONFIG_WHEEL_SCROLL_DIRECTION),
-//                            0));
-//            scrollItemScaling = ScrollItemScaling.fromId(parseIntOrDefault(properties.getProperty(Constants.CONFIG_SCROLL_ITEM_SCALING), 0));
+        lootKey = properties.getProperty(Constants.CONFIG_LOOT_KEY);
 
-        // debug = parseIntOrDefault(properties.getProperty(Constants.CONFIG_DEBUG), 0) != 0;
     }
 
     private static int parseIntOrDefault(String s, int defaultValue) {
+        // Try to parse the string as an integer, if it fails, return the default value
         try {
             return Integer.parseInt(s);
         } catch (NumberFormatException e) {
@@ -65,6 +53,7 @@ public class Config {
     }
 
     public void save() {
+        // try to save the config file with the current values from memory
         try {
             File config = new File(fileName);
             boolean existed = config.exists();
@@ -75,23 +64,14 @@ public class Config {
             FileWriter configWriter = new FileWriter(config);
 
             // Write the values to the file
-
-//                writeBoolean(configWriter, Constants.CONFIG_RMB_TWEAK, rmbTweak);
-//                writeBoolean(configWriter, Constants.CONFIG_LMB_TWEAK_WITH_ITEM, lmbTweakWithItem);
-//                writeBoolean(configWriter, Constants.CONFIG_LMB_TWEAK_WITHOUT_ITEM, lmbTweakWithoutItem);
-//                writeBoolean(configWriter, Constants.CONFIG_WHEEL_TWEAK, wheelTweak);
-//                writeString(configWriter, Constants.CONFIG_WHEEL_SEARCH_ORDER, String.valueOf(wheelSearchOrder.ordinal()));
-//                writeString(configWriter,
-//                        Constants.CONFIG_WHEEL_SCROLL_DIRECTION,
-//                        String.valueOf(wheelScrollDirection.ordinal()));
-//                writeString(configWriter, Constants.CONFIG_SCROLL_ITEM_SCALING, String.valueOf(scrollItemScaling.ordinal()));
-//                writeBoolean(configWriter, Constants.CONFIG_DEBUG, debug);
+            writeString(configWriter, Constants.CONFIG_LOOT_KEY, lootKey);
 
             configWriter.close();
 
             if (!existed)
                 Logger.info("Created the config file.");
         } catch (IOException e) {
+            // If we fail to save the config file, log the error
             Logger.info("Failed to write the config file: " + fileName);
             e.printStackTrace();
         }
@@ -107,14 +87,11 @@ public class Config {
 
     static {
         // Default values for the config settings
-//            defaultValues.setProperty(Constants.CONFIG_RMB_TWEAK, "1");
-//            defaultValues.setProperty(Constants.CONFIG_LMB_TWEAK_WITH_ITEM, "1");
-//            defaultValues.setProperty(Constants.CONFIG_LMB_TWEAK_WITHOUT_ITEM, "1");
-//            defaultValues.setProperty(Constants.CONFIG_WHEEL_TWEAK, "1");
-//            defaultValues.setProperty(Constants.CONFIG_WHEEL_SEARCH_ORDER, "1");
-//            defaultValues.setProperty(Constants.CONFIG_WHEEL_SCROLL_DIRECTION, "0");
-//            defaultValues.setProperty(Constants.CONFIG_SCROLL_ITEM_SCALING, "0");
-//            defaultValues.setProperty(Constants.CONFIG_DEBUG, "0");
+        defaultValues.setProperty(Constants.CONFIG_LOOT_KEY, "C");
+    }
+
+    public String getLootKey() {
+        return lootKey;
     }
 }
 

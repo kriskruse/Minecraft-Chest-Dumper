@@ -31,13 +31,22 @@ public class Main {
         if (initialized)
             return;
 
+        // this is the minceaft instance
         mc = Minecraft.getInstance();
 
+        // Define the config file
         config = new Config(mc.gameDirectory.getAbsolutePath() + File.separator + "config" + File.separator + "NinjaLooter.cfg");
+        // Try to load the config file
         config.read();
 
+        // Set the initialized flag to true
         Logger.info("Initialized.");
         initialized = true;
     }
+
+    public boolean isLooting() {
+        return InputConstants.isKeyDown(mc.getWindow().getWindow(), config.getLootKey());
+    }
+
 
 }
