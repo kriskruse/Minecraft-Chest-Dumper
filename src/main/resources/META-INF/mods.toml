@@ -13,7 +13,7 @@ showAsResourcePack=false
 
 [[mods]]
 modId="ninjalooter"
-version="${file.jarVersion}"
+version="1.0.0"
 displayName="Ninja Looter"
 displayURL=""
 logoFile="logo.png"
@@ -31,12 +31,12 @@ versionRange="[40,)"
 ordering="NONE"
 side="CLIENT"
 
-[[dependencies.ninjalooter]]
-modId="bookshelf"
-mandatory=true
-versionRange="[13.2.0,)"
-ordering="NONE"
-side="CLIENT"
+#[[dependencies.ninjalooter]]
+#modId="bookshelf"
+#mandatory=true
+#versionRange="[13.2.0,)"
+#ordering="NONE"
+#side="CLIENT"
 
 [[dependencies.ninjalooter]]
 modId="minecraft"

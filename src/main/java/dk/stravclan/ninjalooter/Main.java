@@ -44,8 +44,10 @@ public class Main {
         initialized = true;
     }
 
-    public boolean isLooting() {
-        return InputConstants.isKeyDown(mc.getWindow().getWindow(), config.getLootKey());
+    public static boolean isLooting() {
+        // if 'c' is pressed, return true
+        return InputConstants.isKeyDown(mc.getWindow().getWindow(), GLFW.GLFW_KEY_C);
+
     }
 
 

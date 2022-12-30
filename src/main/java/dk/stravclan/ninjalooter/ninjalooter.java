@@ -1,6 +1,8 @@
 package dk.stravclan.ninjalooter;
 
 import com.mojang.logging.LogUtils;
+import net.minecraft.client.Minecraft;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.ConfigGuiHandler.ConfigGuiFactory;
@@ -45,7 +47,10 @@ public class ninjalooter {
             BlockEntity blockEntity = event.getWorld().getBlockEntity(event.getPos());
             // check if blockentity has inventory
             assert blockEntity != null;
-            if (blockEntity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).isPresent()) {
+            if (blockEntity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).isPresent() && Main.isLooting()) {
+                assert Minecraft.getInstance().player != null;
+                Minecraft.getInstance().player.sendMessage(Component.nullToEmpty("BlockEntity has inventory"), Minecraft.getInstance().player.getUUID());
+                LOGGER.info("BlockEntity has inventory");
 
             }
 
