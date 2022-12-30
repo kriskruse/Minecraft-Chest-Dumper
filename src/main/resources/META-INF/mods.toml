@@ -12,27 +12,26 @@ issueTrackerURL="https://github.com/kriskruse/Minecraft-Chest-Dumper/issues"
 showAsResourcePack=false
 
 [[mods]]
-modId="chestdumper"
-version="1.0.0.0"
-displayName="Chest Dumper"
-updateJSONURL="minecraftforge.net/versions.json"
-displayURL="minecraftforge.net"
+modId="ninjalooter"
+version="${file.jarVersion}"
+displayName="Ninja Looter"
+displayURL=""
 logoFile="logo.png"
-credits=""
-authors="BigWar"
+credits="Contributors: BigWar"
+authors="Kris Kruse (BigWar)"
 description='''
   Quickly empty the inventory of a chest without breaking it.
   '''
-displayTest="MATCH_VERSION"
 
-[[dependencies.chestdumper]]
+
+[[dependencies.ninjalooter]]
 modId="forge"
 mandatory=true
 versionRange="[40,)"
 ordering="NONE"
 side="BOTH"
 
-[[dependencies.chestdumper]]
+[[dependencies.ninjalooter]]
 modId="minecraft"
 mandatory=true
 versionRange="[1.18.2,1.19)"

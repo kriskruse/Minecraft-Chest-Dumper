@@ -1,4 +1,4 @@
-package dk.stravclan.chestdumper;
+package dk.stravclan.ninjalooter;
 
 import com.mojang.logging.LogUtils;
 import net.minecraft.world.level.block.Block;
@@ -19,12 +19,12 @@ import java.util.stream.Collectors;
 
 // The value here should match an entry in the META-INF/mods.toml file
 @Mod("chestdumper")
-public class ChestDumper
+public class ninjalooter
 {
     // Directly reference a slf4j logger
     private static final Logger LOGGER = LogUtils.getLogger();
 
-    public ChestDumper()
+    public ninjalooter()
     {
         // Register the setup method for modloading
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);

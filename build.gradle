@@ -16,9 +16,9 @@ plugins {
 apply plugin: 'net.minecraftforge.gradle'
 
 
-version = '1.0'
-group = 'dk.stravclan.chestdumper' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
-archivesBaseName = 'ChestDumper'
+version = project.mod_version
+group = 'dk.stravclan.ninjalooter' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
+archivesBaseName = 'NinjaLooter-forge-mc${minecraftVersion}'
 
 // Mojang ships Java 17 to end users in 1.18+, so your mod should target Java 17.
 java.toolchain.languageVersion = JavaLanguageVersion.of(17)
@@ -170,12 +170,12 @@ dependencies {
 jar {
     manifest {
         attributes([
-                "Specification-Title"     : "chestdumper",
-                "Specification-Vendor"    : "chestdumperteam",
-                "Specification-Version"   : "1", // We are version 1 of ourselves
+                "Specification-Title"     : "Ninja looter",
+                "Specification-Vendor"    : "BigWar",
+                "Specification-Version"   : "${project.version}", // We are version 1 of ourselves
                 "Implementation-Title"    : project.name,
                 "Implementation-Version"  : project.jar.archiveVersion,
-                "Implementation-Vendor"   : "chestdumperteam",
+                "Implementation-Vendor"   : "BigWar",
                 "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
         ])
     }
