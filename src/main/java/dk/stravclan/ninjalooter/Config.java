@@ -1,21 +1,25 @@
 package dk.stravclan.ninjalooter;
 
 import com.mojang.logging.LogUtils;
+import net.minecraft.client.KeyMapping;
 import org.slf4j.Logger;
 
 import java.io.*;
 import java.util.Properties;
 
+import dk.stravclan.ninjalooter.HelperFunctions;
+
 public class Config {
     private static final Properties defaultValues = new Properties();
     private static final Logger Logger = LogUtils.getLogger();
     private String fileName;
-    private String lootKey;
+    public static KeyMapping lootKey;
 
 
 
     Config(String fileName) {
         this.fileName = fileName;
+        lootKey = HelperFunctions.registerKeymapping();
     }
 
     public void read() {
@@ -39,7 +43,8 @@ public class Config {
         }
 
         // Read the config values from the file:
-        lootKey = properties.getProperty(Constants.CONFIG_LOOT_KEY);
+        // register the keybinding
+        HelperFunctions.registerKeymapping();
 
     }
 
@@ -64,7 +69,7 @@ public class Config {
             FileWriter configWriter = new FileWriter(config);
 
             // Write the values to the file
-            writeString(configWriter, Constants.CONFIG_LOOT_KEY, lootKey);
+            writeString(configWriter, Constants.CONFIG_LOOT_KEY, HelperFunctions.keyMapToString(lootKey));
 
             configWriter.close();
 
@@ -90,7 +95,8 @@ public class Config {
         defaultValues.setProperty(Constants.CONFIG_LOOT_KEY, "C");
     }
 
-    public String getLootKey() {
+
+    public KeyMapping getLootKey() {
         return lootKey;
     }
 }
