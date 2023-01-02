@@ -7,8 +7,6 @@ import org.slf4j.Logger;
 import java.io.*;
 import java.util.Properties;
 
-import dk.stravclan.ninjalooter.HelperFunctions;
-
 public class Config {
     private static final Properties defaultValues = new Properties();
     private static final Logger Logger = LogUtils.getLogger();

@@ -1,23 +1,17 @@
 package dk.stravclan.ninjalooter;
 
 import com.mojang.logging.LogUtils;
-import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
+import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.util.Lazy;
-import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.IExtensionPoint;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.network.NetworkConstants;
 import org.slf4j.Logger;
-
-
-import javax.swing.text.html.parser.Entity;
-import java.util.stream.Collectors;
 
 
 // The value here should match an entry in the META-INF/mods.toml file
@@ -53,15 +47,16 @@ public class ninjalooter {
                 LOGGER.info("Item in slot " + i + " is " + mc.player.containerMenu.slots.get(i).getItem());
 
                 ItemStack item = mc.player.containerMenu.slots.get(i).getItem();
-                // spawn item on ground and remove from container
-                mc.player.drop(item, true);
-                mc.player.containerMenu.slots.get(i).remove(1);
+                // if item is not air, left click it and move curser outside inventory and drop it
+                if (!item.isEmpty()) {
+                    assert mc.gameMode != null;
+                    mc.gameMode.handleInventoryMouseClick(mc.player.containerMenu.containerId, i, 0, ClickType.PICKUP, mc.player);
+                    mc.gameMode.handleInventoryMouseClick(mc.player.containerMenu.containerId, -999, 0, ClickType.PICKUP, mc.player);
+                }
 
             }
             mc.player.closeContainer();
         }
-
-
 
     }
 }

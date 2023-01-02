@@ -3,16 +3,10 @@ package dk.stravclan.ninjalooter;
 import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.KeyMapping;
 import net.minecraftforge.client.settings.KeyConflictContext;
-import net.minecraftforge.client.settings.KeyModifier;
-import org.lwjgl.glfw.GLFW;
 
 import static org.lwjgl.glfw.GLFW.GLFW_KEY_C;
 
 public class HelperFunctions {
-
-
-
-
     public static String keyMapToString(KeyMapping keyMap) {
         return keyMap.getKey().getName();
     }

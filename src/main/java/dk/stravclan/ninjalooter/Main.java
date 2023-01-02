@@ -1,26 +1,16 @@
 package dk.stravclan.ninjalooter;
 
-import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.logging.LogUtils;
-import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.inventory.Slot;
-import net.minecraft.world.item.BundleItem;
-import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.client.ClientRegistry;
-import org.lwjgl.glfw.GLFW;
 import org.slf4j.Logger;
 
 import java.io.File;
-import java.util.List;
 
 
 
 public class Main {
     public static Config config;
-    public static KeyMapping keybind;
     private static boolean initialized = false;
     private static Minecraft mc;
 
