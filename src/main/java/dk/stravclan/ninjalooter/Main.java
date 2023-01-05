@@ -12,7 +12,10 @@ public class Main {
         LOGGER.info("Main.initialize()");
         if (initialized)
             return;
+        HelperFunctions.registerKeymapping();
         ClientRegistry.registerKeyBinding(HelperFunctions.getLootKey());
+        ClientRegistry.registerKeyBinding(HelperFunctions.getLootToggleKey());
+
         // Set the initialized flag to true
         LOGGER.info("Initialized.");
         initialized = true;

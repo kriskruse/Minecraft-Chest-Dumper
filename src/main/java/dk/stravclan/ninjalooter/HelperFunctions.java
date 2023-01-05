@@ -9,25 +9,33 @@ import net.minecraftforge.client.settings.KeyConflictContext;
 import net.minecraftforge.client.settings.KeyModifier;
 
 import static org.lwjgl.glfw.GLFW.GLFW_KEY_E;
+import static org.lwjgl.glfw.GLFW.GLFW_KEY_COMMA;
 
 public class HelperFunctions {
     static KeyMapping lootkey;
+    static KeyMapping lootToggleKey;
     static boolean lootKeyStatus = false;
     static int lootKeyFalseCount = 0;
     // constructor
     public HelperFunctions() {
-        lootkey = registerKeymapping();
+        registerKeymapping();
     }
 
     public static KeyMapping getLootKey() {
         if (lootkey == null) {
-            lootkey = registerKeymapping();
+            registerKeymapping();
         }
         return lootkey;
     }
+    public static KeyMapping getLootToggleKey() {
+        if (lootToggleKey == null) {
+            registerKeymapping();
+        }
+        return lootToggleKey;
+    }
 
-    public static KeyMapping registerKeymapping() {
-        return new KeyMapping(
+    public static void registerKeymapping() {
+        lootkey = new KeyMapping(
                 // Bind the key to the keybinding
                 // default key is "Alt + E"
                 Constants.CONFIG_LOOT_KEY, // Key Title
@@ -35,6 +43,15 @@ public class HelperFunctions {
                 KeyModifier.ALT, // Default modifier is shift
                 InputConstants.Type.KEYSYM, // Default mapping is on the keyboard
                 GLFW_KEY_E, // Default input is the "E" key
+                Constants.MOD_ID  // Mapping will be in the new example category
+        );
+        lootToggleKey = new KeyMapping(
+                // Bind the key to the keybinding
+                // default key is ","
+                Constants.CONFIG_LOOT_TOGGLE_KEY, // Key Title
+                KeyConflictContext.IN_GAME, // Mapping can only be used when a screen is open
+                InputConstants.Type.KEYSYM, // Default mapping is on the keyboard
+                GLFW_KEY_COMMA, // Default input is the "," key
                 Constants.MOD_ID  // Mapping will be in the new example category
         );
     }
