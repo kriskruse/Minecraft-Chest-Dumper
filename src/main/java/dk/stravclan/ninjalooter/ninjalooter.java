@@ -2,7 +2,6 @@ package dk.stravclan.ninjalooter;
 
 import com.mojang.logging.LogUtils;
 import net.minecraft.client.Minecraft;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
@@ -13,6 +12,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.network.NetworkConstants;
 import org.slf4j.Logger;
 
+import static dk.stravclan.ninjalooter.HelperFunctions.lootToggle;
 
 
 // The value here should match an entry in the META-INF/mods.toml file
@@ -21,7 +21,6 @@ public class ninjalooter {
     // Directly reference a slf4j logger
     private static final Logger LOGGER = LogUtils.getLogger();
     private static Minecraft mc;
-    private static boolean lootToggle = false;
 
     public ninjalooter() {
         // Gather config saved on instance, if not create a new one with default values
@@ -39,13 +38,13 @@ public class ninjalooter {
     }
 
 
-    @SubscribeEvent // ScreenEvent.BackgroundDrawnEvent event
+    @SubscribeEvent
     public void onContainerOpen(TickEvent.ClientTickEvent event) {
         if (mc.player == null || mc.player.containerMenu.containerId == 0 || event.phase != TickEvent.Phase.END) {
             return;
         }
         // if lootkey status is true or toggle is on call lootContainer
-        if (HelperFunctions.lootkeyStatus() || lootToggle) {
+        if (HelperFunctions.lootkeyStatus() || HelperFunctions.lootToggle) {
             HelperFunctions.lootContainer(mc);
             mc.player.closeContainer();
         }
@@ -66,12 +65,28 @@ public class ninjalooter {
     @SubscribeEvent
     public void toggleLoot(InputEvent.KeyInputEvent event) {
         if (mc.player == null){return;}
+
+        // call the function toggleLoot()
         if (HelperFunctions.getLootToggleKey().isDown()) {
-            //LOGGER.info("Toggle key pressed");
-            lootToggle = !lootToggle;
-            // Call update to UI generator
-            mc.player.sendMessage(new TextComponent("Loot toggle: " + lootToggle), mc.player.getUUID());
+            HelperFunctions.toogleLoot(mc);
         }
+
+        // Add new function to HelperFunctions and call it here
+        // The function should toggle a loot blacklist
+        // The function should also somehow show the current blacklist to the user
+        if (HelperFunctions.getLootBlacklistKey().isDown()) {
+            HelperFunctions.toogleLootBlacklist(mc);
+        }
+
+        // add new function to HelperFunctions and call it here
+        // The function should add a hovered item to the blacklist if a specific key or combination is pressed
+        if (HelperFunctions.getAddLootBlacklistKey().isDown()) {
+            HelperFunctions.addLootBlacklist(mc);
+        }
+
+
+
+
     }
 }
 
