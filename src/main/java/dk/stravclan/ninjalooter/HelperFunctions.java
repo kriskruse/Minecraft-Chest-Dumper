@@ -7,17 +7,22 @@ import net.minecraft.network.chat.TextComponent;
 import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.client.settings.KeyConflictContext;
-import net.minecraftforge.client.settings.KeyModifier;
+import org.checkerframework.checker.units.qual.K;
+
+import java.util.*;
 
 import static org.lwjgl.glfw.GLFW.*;
 
 public class HelperFunctions {
     static KeyMapping lootkey;
     static KeyMapping lootToggleKey;
-    static KeyMapping AddLootBlacklistKey;
+    static KeyMapping addLootBlacklistKey;
+    static KeyMapping toggleLootBlacklistKey;
     static boolean lootKeyStatus = false;
     static int lootKeyFalseCount = 0;
     static boolean lootToggle = false;
+    static boolean blacklistToggle = false;
+    static Dictionary<String, Boolean> lootBlacklist = new Hashtable<>();
 
     // constructor
     public HelperFunctions() {
@@ -37,10 +42,19 @@ public class HelperFunctions {
         return lootToggleKey;
     }
     public static KeyMapping getAddLootBlacklistKey() {
-        if (AddLootBlacklistKey == null) {
+        if (addLootBlacklistKey == null) {
             registerKeymapping();
         }
-        return AddLootBlacklistKey;
+        return addLootBlacklistKey;
+    }
+    public static KeyMapping getToggleLootBlacklistKey() {
+        if (toggleLootBlacklistKey == null) {
+            registerKeymapping();
+        }
+        return toggleLootBlacklistKey;
+    }
+    public static boolean getlootkeyStatus() {
+        return lootKeyStatus;
     }
 
     public static void registerKeymapping() {
@@ -48,32 +62,41 @@ public class HelperFunctions {
         lootkey = new KeyMapping(
                 // Bind the key to the keybinding
                 // default key is "Alt + E"
-                Constants.CONFIG_LOOT_KEY, // Key Title
+                Constants.NAME_LOOT_KEY, // Key Title
                 KeyConflictContext.IN_GAME, // Mapping can only be used when a screen is open
-                KeyModifier.ALT, // Default modifier is shift
                 InputConstants.Type.KEYSYM, // Default mapping is on the keyboard
-                GLFW_KEY_E, // Default input is the "E" key
+                GLFW_KEY_LEFT_ALT, // Default input is the "E" key
                 Constants.MOD_ID  // Mapping will be in the new example category
         );
         lootToggleKey = new KeyMapping(
                 // Bind the key to the keybinding
                 // default key is ","
-                Constants.CONFIG_LOOT_TOGGLE_KEY, // Key Title
+                Constants.NAME_LOOT_TOGGLE_KEY, // Key Title
                 KeyConflictContext.IN_GAME, // Mapping can only be used when a screen is open
                 InputConstants.Type.KEYSYM, // Default mapping is on the keyboard
                 GLFW_KEY_COMMA, // Default input is the "," key
                 Constants.MOD_ID  // Mapping will be in the new example category
         );
-        AddLootBlacklistKey = new KeyMapping(
+        addLootBlacklistKey = new KeyMapping(
                 // Bind the key to the keybinding
                 // default key is "B"
-                Constants.CONFIG_LOOT_TOGGLE_KEY, // Key Title
+                Constants.NAME_ADD_BLACKLIST_KEY, // Key Title
                 KeyConflictContext.IN_GAME, // Mapping can only be used when a screen is open
-                KeyModifier.CONTROL, // Default modifier is CTRL
+                InputConstants.Type.KEYSYM, // Default mapping is on the keyboard
+                GLFW_KEY_V, // Default input is the "," key
+                Constants.MOD_ID// Mapping will be in the new example category
+        );
+        toggleLootBlacklistKey = new KeyMapping(
+                // Bind the key to the keybinding
+                // default key is "B"
+                Constants.NAME_TOGGLE_BLACKLIST_KEY, // Key Title
+                KeyConflictContext.IN_GAME, // Mapping can only be used when a screen is open
                 InputConstants.Type.KEYSYM, // Default mapping is on the keyboard
                 GLFW_KEY_B, // Default input is the "," key
                 Constants.MOD_ID  // Mapping will be in the new example category
         );
+        //event.register()
+
     }
     public static void lootContainer(Minecraft mc) {
         if (mc.player == null){
@@ -86,16 +109,25 @@ public class HelperFunctions {
             // if item is not air, left click it and move curser outside inventory and drop it
             if (!item.isEmpty()) {
                 assert mc.gameMode != null;
-                mc.gameMode.handleInventoryMouseClick(mc.player.containerMenu.containerId, i, 0, ClickType.PICKUP, mc.player);
-                mc.gameMode.handleInventoryMouseClick(mc.player.containerMenu.containerId, -999, 0, ClickType.PICKUP, mc.player);
-            }
+                if (!blacklistToggle){
+                    // if not in blacklist mode, loot everything
+                    mc.gameMode.handleInventoryMouseClick(mc.player.containerMenu.containerId, i, 0, ClickType.PICKUP, mc.player);
+                    mc.gameMode.handleInventoryMouseClick(mc.player.containerMenu.containerId, -999, 0, ClickType.PICKUP, mc.player);
+                    continue;
+                } else if (!isInBlacklist(item.getDescriptionId())) {
+                    // move cursor to cell and pick up item
+                    mc.gameMode.handleInventoryMouseClick(mc.player.containerMenu.containerId, i, 0, ClickType.PICKUP, mc.player);
+                    // move cursor outside inventory and drop item
+                    mc.gameMode.handleInventoryMouseClick(mc.player.containerMenu.containerId, -999, 0, ClickType.PICKUP, mc.player);
+                }else { // Skip item if it is blacklisted
+                    continue;
+                }
 
+            }
         }
     }
 
-    public static boolean lootkeyStatus() {
-        return lootKeyStatus;
-    }
+
 
     public static void keyPressed(boolean keyPressed) {
         if (keyPressed) {
@@ -118,17 +150,50 @@ public class HelperFunctions {
     }
 
     public static void addLootBlacklist(Minecraft mc) {
+        if (mc.player == null){return;}
+        // get item stack in hand
+        ItemStack item = mc.player.getItemInHand(mc.player.getUsedItemHand());
 
-        // some kind of dictionary with items, and a key boolean to toggle if it should be looted or not
-        // unseen items should be looted by default and only be added to the dictionary if the user adds them
-        // to the blacklist
+        // if there is an item in hand, and it is not in the blacklist, add it to the blacklist
+        if (!item.isEmpty() && lootBlacklist.get(item.getDescriptionId()) == null) {
+            lootBlacklist.put(item.getDescriptionId(), true);
+            mc.player.sendMessage(new TextComponent(Util.describtionIdToName(item.getDescriptionId()) + " added to blacklist"), mc.player.getUUID());
 
-        // look up item name in dictionary
-        // if item is in dictionary and item is blacklisted skip
-        // else loot item
-
+            // if the item is in the blacklist, reverse the value
+        } else if (lootBlacklist.get(item.getDescriptionId()) != null) {
+            //lootBlacklist.put(item.getDescriptionId(), !lootBlacklist.get(item.getDescriptionId()));
+            lootBlacklist.remove(item.getDescriptionId());
+            mc.player.sendMessage(new TextComponent(Util.describtionIdToName(item.getDescriptionId()) + " removed from blacklist"), mc.player.getUUID());
+        }
+        // Save the change
+        Util.saveBlacklist();
 
     }
 
+
+    public static void toggleLootBlacklist(Minecraft mc) {
+        if (mc.player == null){return;}
+        //LOGGER.info("Toggle blacklist key pressed");
+        blacklistToggle = !blacklistToggle;
+        // Call update to UI generator
+        mc.player.sendMessage(new TextComponent("Loot blacklist toggle: " + blacklistToggle), mc.player.getUUID());
+        mc.player.sendMessage(new TextComponent("Items in blacklist: " + Util.dictEnumeratorToBlockNameList(lootBlacklist.keys())), mc.player.getUUID());
+
+    }
+
+    public static boolean isInBlacklist(String itemId) {
+        // dict <item ID, Blacklist status>
+        if (lootBlacklist.get(itemId) == null) {
+            return false;
+        } else {
+            return lootBlacklist.get(itemId);
+        }
+    }
+
+    public static void addDescribtionsToBlacklist(String[] list) {
+        for (String id : list) {
+            lootBlacklist.put(id, true);
+        }
+    }
 
 }

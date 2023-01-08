@@ -20,7 +20,7 @@ import static dk.stravclan.ninjalooter.HelperFunctions.lootToggle;
 public class ninjalooter {
     // Directly reference a slf4j logger
     private static final Logger LOGGER = LogUtils.getLogger();
-    private static Minecraft mc;
+    public static Minecraft mc;
 
     public ninjalooter() {
         // Gather config saved on instance, if not create a new one with default values
@@ -34,6 +34,8 @@ public class ninjalooter {
         MinecraftForge.EVENT_BUS.register(this);
 
         mc = Minecraft.getInstance();
+        Util.loadBlacklist();
+        LOGGER.info("loaded blacklist");
 
     }
 
@@ -44,7 +46,7 @@ public class ninjalooter {
             return;
         }
         // if lootkey status is true or toggle is on call lootContainer
-        if (HelperFunctions.lootkeyStatus() || HelperFunctions.lootToggle) {
+        if (HelperFunctions.getlootkeyStatus() || HelperFunctions.lootToggle) {
             HelperFunctions.lootContainer(mc);
             mc.player.closeContainer();
         }
@@ -63,24 +65,19 @@ public class ninjalooter {
         }
     }
     @SubscribeEvent
-    public void toggleLoot(InputEvent.KeyInputEvent event) {
+    public void onKeyInput(InputEvent.KeyInputEvent event) {
         if (mc.player == null){return;}
 
-        // call the function toggleLoot()
+        // call the function toggleLoot() if the key is pressed
         if (HelperFunctions.getLootToggleKey().isDown()) {
             HelperFunctions.toogleLoot(mc);
         }
-
-        // Add new function to HelperFunctions and call it here
-        // The function should toggle a loot blacklist
-        // The function should also somehow show the current blacklist to the user
-        if (HelperFunctions.getLootBlacklistKey().isDown()) {
-            HelperFunctions.toogleLootBlacklist(mc);
+        // call the function addLootBlacklist() if the key is pressed
+        else if (HelperFunctions.getToggleLootBlacklistKey().isDown()) {
+            HelperFunctions.toggleLootBlacklist(mc);
         }
-
-        // add new function to HelperFunctions and call it here
-        // The function should add a hovered item to the blacklist if a specific key or combination is pressed
-        if (HelperFunctions.getAddLootBlacklistKey().isDown()) {
+        // call the function addLootBlacklist() if the key is pressed
+        else if (HelperFunctions.getAddLootBlacklistKey().isDown()) {
             HelperFunctions.addLootBlacklist(mc);
         }
 
