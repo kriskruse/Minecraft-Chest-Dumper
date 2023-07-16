@@ -3,8 +3,10 @@ package dk.stravclan.ninjalooter;
 import com.mojang.logging.LogUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.client.event.InputEvent;
+import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.IExtensionPoint;
 import net.minecraftforge.fml.ModLoadingContext;
@@ -28,10 +30,14 @@ public class ninjalooter {
 
         // Modloading context is used to register extension points for your mod.
         ModLoadingContext.get().registerExtensionPoint(IExtensionPoint.DisplayTest.class, () ->
-                new IExtensionPoint.DisplayTest(() -> NetworkConstants.IGNORESERVERONLY, (a, b) -> true));
+                new IExtensionPoint.DisplayTest(() -> "true", (a, b) -> true));
 
-        // Register ourselves for server and other game events we are interested in
+        // Register ourselves for game events we are interested in
         MinecraftForge.EVENT_BUS.register(this);
+
+
+
+
 
         mc = Minecraft.getInstance();
         Util.loadBlacklist();
@@ -81,11 +87,15 @@ public class ninjalooter {
         else if (HelperFunctions.getAddLootBlacklistKey().isDown()) {
             HelperFunctions.addLootBlacklist(mc);
         }
-
-
-
-
     }
+
+//    @SubscribeEvent(priority = EventPriority.NORMAL)
+//    public void OnDrawHUD(RenderGameOverlayEvent.Post pEvent) {
+//        if (pEvent.getType() == RenderGameOverlayEvent.ElementType.ALL) {
+//            HelperFunctions.drawHud(mc);
+//
+//        }
+//    }
 }
 
 

@@ -1,6 +1,26 @@
 1.18.x Changelog
+40.2
+====
+ - 40.2.10 Improve logging for server connections (#9624)
+ - 40.2.9  [1.18.2] Add new helper without duplicate neighbor update call (#9235)
+ - 40.2.8  Fix fluids not evaporating correctly. Fix #9514
+ - 40.2.7  [1.18.x] Add Forge "bosses" tag (#9513)
+ - 40.2.6  [1.18.2] fix inconsistent vaporization in BucketItem & FluidType (#9341)
+ - 40.2.5  [1.18.x] Fixed PlayerInteractEvent.EntityInteractSpecific being called too late (#9494)
+ - 40.2.4  [1.18.2] Fix incorrect SpecialSpawn fire location (#9481)
+           Co-authored-by: Brennan Ward <3682588+Shadows-of-Fire@users.noreply.github.com>
+ - 40.2.3  [1.18.x] Make mixins work with JarJar (#9506)
+           Backport of #8900
+           Update ASM to 9.5
+           Update JarJar to 0.3.19
+           Update SecureJarHandler to 1.0.8
+ - 40.2.2  Fix forge grindstone hooks allowing stacks of non-stackable items (#9458)
+ - 40.2.1  Fire TickEvent.WorldTickEvent on ClientLevel tick (#9304)
+ - 40.2.0  Mark 1.18.2 Recommended Build 2
+
 40.1
 ====
+ - 40.1.93 Fix mob block breaking AI when chunk 0,0 is unloaded Fixes #9241 (#9250)
  - 40.1.92 [1.18.x] Make check tasks fail and report errors (#9228)
            * Make check tasks fail and report errors
            * License header and sas
