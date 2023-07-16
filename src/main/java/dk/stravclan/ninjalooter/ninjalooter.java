@@ -35,7 +35,8 @@ public class ninjalooter {
 
         mc = Minecraft.getInstance();
         Util.loadBlacklist();
-        LOGGER.info("loaded blacklist");
+        LOGGER.info("loaded NinjaLooter blacklist");
+        LOGGER.info("NinjaLooter ready to loot!");
 
     }
 

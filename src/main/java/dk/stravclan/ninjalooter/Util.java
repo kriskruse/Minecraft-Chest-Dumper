@@ -48,10 +48,12 @@ public class Util {
             configWriter.close();
 
             if (!existed)
-                LOGGER.info("Created the config file.");
+                LOGGER.info("Created a fresh config file!");
         } catch (IOException e) {
             LOGGER.info("Failed to write the config file: " + fileName);
             e.printStackTrace();
+            LOGGER.info("This is a FATAL Error, the mod will not work properly without the config file.");
+            LOGGER.info("Please report this error @ https://github.com/kriskruse/NinjaLooter/issues");
         }
     }
 
@@ -59,6 +61,7 @@ public class Util {
         Properties properties = new Properties(defaultValues);
 
         try {
+            // Try to read the config file
             FileReader configReader = new FileReader(fileName);
             properties.load(configReader);
             configReader.close();
@@ -68,12 +71,14 @@ public class Util {
             saveBlacklist();
             return;
         } catch (IOException e) {
+            // if we get another unexpected error, print it and return.
             LOGGER.info("Failed to read the config file: " + fileName);
             e.printStackTrace();
+            LOGGER.info("Something blocked the mod from reading the config file. This is not intended behavior, check file permissions.");
+            LOGGER.info("Please report this error @ https://github.com/kriskruse/NinjaLooter/issues");
             return;
         }
 
-        //rmbTweak = parseIntOrDefault(properties.getProperty(Constants.CONFIG_RMB_TWEAK), 1) != 0;
         String[] blacklist = properties.getProperty(Constants.CONFIG_BLACKLIST).split(",");
         HelperFunctions.addDescribtionsToBlacklist(blacklist);
 

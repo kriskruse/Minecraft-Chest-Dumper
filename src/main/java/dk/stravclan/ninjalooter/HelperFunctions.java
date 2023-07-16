@@ -161,7 +161,6 @@ public class HelperFunctions {
 
             // if the item is in the blacklist, reverse the value
         } else if (lootBlacklist.get(item.getDescriptionId()) != null) {
-            //lootBlacklist.put(item.getDescriptionId(), !lootBlacklist.get(item.getDescriptionId()));
             lootBlacklist.remove(item.getDescriptionId());
             mc.player.sendMessage(new TextComponent(Util.describtionIdToName(item.getDescriptionId()) + " removed from blacklist"), mc.player.getUUID());
         }
