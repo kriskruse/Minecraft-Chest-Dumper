@@ -2,6 +2,9 @@ package dk.stravclan.ninjalooter;
 
 import com.mojang.logging.LogUtils;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.components.events.GuiEventListener;
+import net.minecraft.world.inventory.*;
+import net.minecraft.world.level.block.entity.*;
 import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.common.MinecraftForge;
@@ -14,6 +17,10 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.network.NetworkConstants;
 import org.slf4j.Logger;
 
+import java.util.Arrays;
+import java.util.List;
+
+import static dk.stravclan.ninjalooter.HelperFunctions.getAddContainerToListKey;
 import static dk.stravclan.ninjalooter.HelperFunctions.lootToggle;
 
 
@@ -35,10 +42,6 @@ public class ninjalooter {
         // Register ourselves for game events we are interested in
         MinecraftForge.EVENT_BUS.register(this);
 
-
-
-
-
         mc = Minecraft.getInstance();
         Util.loadBlacklist();
         LOGGER.info("loaded NinjaLooter blacklist");
@@ -52,12 +55,15 @@ public class ninjalooter {
         if (mc.player == null || mc.player.containerMenu.containerId == 0 || event.phase != TickEvent.Phase.END) {
             return;
         }
-        // if lootkey status is true or toggle is on call lootContainer
-        if (HelperFunctions.getlootkeyStatus() || HelperFunctions.lootToggle) {
-            HelperFunctions.lootContainer(mc);
-            mc.player.closeContainer();
+
+        // Check if the container is a ChestContainer
+        if (mc.player.containerMenu instanceof ChestMenu) {
+            // if lootkey status is true or toggle is on call lootContainer
+            if (HelperFunctions.getlootkeyStatus() || lootToggle) {
+                HelperFunctions.lootContainer(mc);
+                mc.player.closeContainer();
+            }
         }
-        //LOGGER.info("Container open");
     }
 
     @SubscribeEvent
@@ -71,23 +77,49 @@ public class ninjalooter {
             HelperFunctions.keyPressed(true);
         }
     }
+    
+    
+    long startTime = System.currentTimeMillis();
+    int lastPress = 0;
+    double timeOutTime = 0.5 * 1000;
+    long elapsedTime = 0;
     @SubscribeEvent
     public void onKeyInput(InputEvent.KeyInputEvent event) {
         if (mc.player == null){return;}
+        elapsedTime = System.currentTimeMillis() - startTime;
 
         // call the function toggleLoot() if the key is pressed
-        if (HelperFunctions.getLootToggleKey().isDown()) {
+        if (HelperFunctions.getLootToggleKey().consumeClick() &&
+                (elapsedTime > timeOutTime || lastPress != HelperFunctions.getLootToggleKey().getKey().getValue())) {
             HelperFunctions.toogleLoot(mc);
+            startTime = System.currentTimeMillis();
+            lastPress = event.getKey();
         }
         // call the function addLootBlacklist() if the key is pressed
-        else if (HelperFunctions.getToggleLootBlacklistKey().isDown()) {
+        else if (HelperFunctions.getToggleLootBlacklistKey().consumeClick() &&
+                (elapsedTime > timeOutTime || lastPress != HelperFunctions.getToggleLootBlacklistKey().getKey().getValue())) {
             HelperFunctions.toggleLootBlacklist(mc);
+            startTime = System.currentTimeMillis();
+            lastPress = event.getKey();
         }
         // call the function addLootBlacklist() if the key is pressed
-        else if (HelperFunctions.getAddLootBlacklistKey().isDown()) {
+        else if (HelperFunctions.getAddLootBlacklistKey().consumeClick() &&
+                (elapsedTime > timeOutTime || lastPress != HelperFunctions.getAddLootBlacklistKey().getKey().getValue())) {
             HelperFunctions.addLootBlacklist(mc);
+            startTime = System.currentTimeMillis();
+            lastPress = event.getKey();
         }
+        else if ((HelperFunctions.getAddContainerToListKey().consumeClick() ||
+                (event.getKey() == getAddContainerToListKey().getKey().getValue())) &&
+                        (elapsedTime > timeOutTime || lastPress != HelperFunctions.getAddContainerToListKey().getKey().getValue())){
+            LOGGER.info("Key pressed to add container");
+            HelperFunctions.addContainerToList(mc);
+            startTime = System.currentTimeMillis();
+            lastPress = event.getKey();
+        }
+
     }
+
 
 //    @SubscribeEvent(priority = EventPriority.NORMAL)
 //    public void OnDrawHUD(RenderGameOverlayEvent.Post pEvent) {

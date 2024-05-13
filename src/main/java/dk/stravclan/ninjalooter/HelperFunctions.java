@@ -1,31 +1,34 @@
 package dk.stravclan.ninjalooter;
 
 import com.mojang.blaze3d.platform.InputConstants;
+import com.mojang.logging.LogUtils;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.inventory.ChestMenu;
 import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.client.settings.KeyConflictContext;
-import org.apache.commons.lang3.NotImplementedException;
-import org.checkerframework.checker.units.qual.K;
-import org.lwjgl.opengl.GL11;
+import org.slf4j.Logger;
 
 import java.util.*;
 
 import static org.lwjgl.glfw.GLFW.*;
 
 public class HelperFunctions {
+    private static final Logger LOGGER = LogUtils.getLogger();
     static KeyMapping lootkey;
     static KeyMapping lootToggleKey;
     static KeyMapping addLootBlacklistKey;
     static KeyMapping toggleLootBlacklistKey;
+    static KeyMapping addContainerKey;
     static boolean lootKeyStatus = false;
     static int lootKeyFalseCount = 0;
     static boolean lootToggle = false;
     static boolean blacklistToggle = false;
     static Dictionary<String, Boolean> lootBlacklist = new Hashtable<>();
+    static Dictionary<String, Boolean> containerList = new Hashtable<>();
 
     // constructor
     public HelperFunctions() {
@@ -56,6 +59,12 @@ public class HelperFunctions {
         }
         return toggleLootBlacklistKey;
     }
+    public static KeyMapping getAddContainerToListKey() {
+        if (addContainerKey == null) {
+            registerKeymapping();
+        }
+        return addContainerKey;
+    }
     public static boolean getlootkeyStatus() {
         return lootKeyStatus;
     }
@@ -64,11 +73,11 @@ public class HelperFunctions {
         // registers the keymapping we need
         lootkey = new KeyMapping(
                 // Bind the key to the keybinding
-                // default key is "Alt + E"
+                // default key is "Left Alt"
                 Constants.NAME_LOOT_KEY, // Key Title
                 KeyConflictContext.IN_GAME, // Mapping can only be used when a screen is open
                 InputConstants.Type.KEYSYM, // Default mapping is on the keyboard
-                GLFW_KEY_LEFT_ALT, // Default input is the "E" key
+                GLFW_KEY_LEFT_ALT, // Default input is the "Left ALt" key
                 Constants.MOD_ID  // Mapping will be in the new example category
         );
         lootToggleKey = new KeyMapping(
@@ -82,11 +91,11 @@ public class HelperFunctions {
         );
         addLootBlacklistKey = new KeyMapping(
                 // Bind the key to the keybinding
-                // default key is "B"
+                // default key is "V"
                 Constants.NAME_ADD_BLACKLIST_KEY, // Key Title
                 KeyConflictContext.IN_GAME, // Mapping can only be used when a screen is open
                 InputConstants.Type.KEYSYM, // Default mapping is on the keyboard
-                GLFW_KEY_V, // Default input is the "," key
+                GLFW_KEY_V, // Default input is the "V" key
                 Constants.MOD_ID// Mapping will be in the new example category
         );
         toggleLootBlacklistKey = new KeyMapping(
@@ -95,7 +104,16 @@ public class HelperFunctions {
                 Constants.NAME_TOGGLE_BLACKLIST_KEY, // Key Title
                 KeyConflictContext.IN_GAME, // Mapping can only be used when a screen is open
                 InputConstants.Type.KEYSYM, // Default mapping is on the keyboard
-                GLFW_KEY_B, // Default input is the "," key
+                GLFW_KEY_B, // Default input is the "B" key
+                Constants.MOD_ID  // Mapping will be in the new example category
+        );
+        addContainerKey = new KeyMapping(
+                // Bind the key to the keybinding
+                // default key is "H"
+                Constants.NAME_ADD_CONTAINER_KEY, // Key Title
+                KeyConflictContext.GUI, // Mapping can only be used when a screen is open
+                InputConstants.Type.KEYSYM, // Default mapping is on the keyboard
+                GLFW_KEY_H, // Default input is the "H" key
                 Constants.MOD_ID  // Mapping will be in the new example category
         );
         //event.register()
@@ -170,6 +188,27 @@ public class HelperFunctions {
         // Save the change
         Util.saveBlacklist();
 
+    }
+
+    public static void addContainerToList(Minecraft mc){
+        if (mc.player == null || mc.screen == null){
+            LOGGER.info("Player is null in addContainerToList");
+            return;}
+        // get item stack in hand
+        String containerName = mc.player.containerMenu.getClass().getName();
+
+        // if the naming scheme matches the ValultHunters mod, remove the first and last word
+
+
+        if (!containerName.isEmpty() && containerList.get(containerName) == null) {
+            containerList.put(containerName, true);
+            mc.player.sendMessage(new TextComponent(containerName + " added to container list"), mc.player.getUUID());
+        } else if (containerList.get(containerName) != null) {
+            containerList.remove(containerName);
+            mc.player.sendMessage(new TextComponent(containerName + " removed from container list"), mc.player.getUUID());
+        } else {
+            LOGGER.info("Container name is empty");
+        }
     }
 
 
