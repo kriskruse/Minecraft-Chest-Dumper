@@ -55,15 +55,16 @@ public class ninjalooter {
         if (mc.player == null || mc.player.containerMenu.containerId == 0 || event.phase != TickEvent.Phase.END) {
             return;
         }
-
-        // Check if the container is a ChestContainer
-        if (mc.player.containerMenu instanceof ChestMenu) {
-            // if lootkey status is true or toggle is on call lootContainer
-            if (HelperFunctions.getlootkeyStatus() || lootToggle) {
-                HelperFunctions.lootContainer(mc);
-                mc.player.closeContainer();
-            }
+        // Check if the container is part of the container list
+        if (!(HelperFunctions.containerIsInList(mc.player.containerMenu.getClass().getSimpleName()))) {
+            return;
         }
+        // if lootkey status is true or toggle is on call lootContainer
+        if (HelperFunctions.getlootkeyStatus() || lootToggle) {
+            HelperFunctions.lootContainer(mc);
+            mc.player.closeContainer();
+        }
+
     }
 
     @SubscribeEvent

@@ -68,6 +68,9 @@ public class HelperFunctions {
     public static boolean getlootkeyStatus() {
         return lootKeyStatus;
     }
+    public static boolean containerIsInList(String containerName) {
+        return containerList.get(containerName) != null;
+    }
 
     public static void registerKeymapping() {
         // registers the keymapping we need
@@ -195,7 +198,7 @@ public class HelperFunctions {
             LOGGER.info("Player is null in addContainerToList");
             return;}
         // get item stack in hand
-        String containerName = mc.player.containerMenu.getClass().getName();
+        String containerName = mc.player.containerMenu.getClass().getSimpleName();
 
         // if the naming scheme matches the ValultHunters mod, remove the first and last word
 
@@ -236,4 +239,6 @@ public class HelperFunctions {
             lootBlacklist.put(id, true);
         }
     }
+
+
 }
