@@ -14,7 +14,7 @@ public class Main {
     public static Util util;
 
     public static void initialize() {
-        LOGGER.info("Main.initialize");
+        LOGGER.info(Constants.MOD_ID + " Main.initialize");
         if (initialized)
             return;
 
@@ -23,10 +23,11 @@ public class Main {
         ClientRegistry.registerKeyBinding(HelperFunctions.getLootToggleKey());
         ClientRegistry.registerKeyBinding(HelperFunctions.getAddLootBlacklistKey());
         ClientRegistry.registerKeyBinding(HelperFunctions.getToggleLootBlacklistKey());
-        LOGGER.info("Main.initialize: registered keybindings");
+        ClientRegistry.registerKeyBinding(HelperFunctions.getAddContainerToListKey());
+        LOGGER.info(Constants.MOD_ID + " Main.initialize: Keybindings registered.");
 
         // Set the initialized flag to true
-        LOGGER.info("Initialized.");
+        LOGGER.info(Constants.MOD_ID + " Initialized.");
         initialized = true;
     }
 }
