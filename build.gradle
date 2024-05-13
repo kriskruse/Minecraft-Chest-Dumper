@@ -17,7 +17,7 @@ plugins {
 apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'org.parchmentmc.librarian.forgegradle'
 
-version = "1.1.1"
+version = "1.2.0"
 group = 'dk.stravclan.ninjalooter' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = 'NinjaLooter-forge-mc-1.18.2'
 
