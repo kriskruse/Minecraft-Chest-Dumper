@@ -50,8 +50,8 @@ public class Util {
             if (!existed)
                 LOGGER.info("Created a fresh config file!");
         } catch (IOException e) {
-            LOGGER.info("Failed to write the config file: " + fileName);
-            e.printStackTrace();
+            LOGGER.info("Failed to write the config file: {}", fileName);
+            LOGGER.error("Error: {}", e.getMessage());
             LOGGER.info("This is a FATAL Error, the mod will not work properly without the config file.");
             LOGGER.info("Please report this error @ https://github.com/kriskruse/NinjaLooter/issues");
         }
@@ -67,13 +67,13 @@ public class Util {
             configReader.close();
         } catch (FileNotFoundException ignored) {
             // If the config does not exist, generate the default one.
-            LOGGER.info("Generating the config file at: " + fileName);
+            LOGGER.info("Generating the config file at: {}", fileName);
             saveBlacklist();
             return;
         } catch (IOException e) {
             // if we get another unexpected error, print it and return.
-            LOGGER.info("Failed to read the config file: " + fileName);
-            e.printStackTrace();
+            LOGGER.info("Failed to read the config file: {}", fileName);
+            LOGGER.error("Error: {}", e.getMessage());
             LOGGER.info("Something blocked the mod from reading the config file. This is not intended behavior, check file permissions.");
             LOGGER.info("Please report this error @ https://github.com/kriskruse/NinjaLooter/issues");
             return;
